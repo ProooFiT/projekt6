@@ -1,3 +1,11 @@
+/**
+ * @file lineData.cpp
+ * @brief Implementacja klasy `LineData`, która reprezentuje pojedynczy rekord danych energetycznych.
+ *
+ * Klasa `LineData` przechowuje dane dotyczące energii i zapewnia metody do serializacji,
+ * deserializacji oraz ich prezentacji w postaci tekstowej.
+ */
+
 #include <algorithm>
 #include <iostream>
 #include <sstream>
@@ -7,6 +15,10 @@
 
 using namespace std;
 
+/**
+ * @brief Konstruktor tworzący obiekt `LineData` na podstawie ciągu znaków.
+ * @param line Ciąg znaków reprezentujący pojedynczy rekord danych (CSV).
+ */
 LineData::LineData(const string& line) {
     vector<string> values;
     stringstream ss(line);
@@ -27,27 +39,43 @@ LineData::LineData(const string& line) {
     logger.log("Wczytano linie: " + this->printString());
 }
 
+/**
+ * @brief Konstruktor tworzący obiekt `LineData` na podstawie strumienia wejściowego.
+ * @param in Strumień wejściowy do deserializacji obiektu.
+ */
 LineData::LineData(ifstream& in) {
     deserialize(in);
 }
 
-
+/**
+ * @brief Wyświetla dane na standardowe wyjście.
+ */
 void LineData::print() const {
-    cout << date << " " << autokonsumpcja << " " << eksport << " " << import << " " << pobor << " " << produkcja << endl;
+    cout << date << " " << autokonsumpcja << " " << eksport << " " 
+         << import << " " << pobor << " " << produkcja << endl;
 }
 
-
+/**
+ * @brief Wyświetla dane w sformatowanej postaci, z wcięciem.
+ */
 void LineData::printData() const {
-    cout << "\t\t\t\t" << autokonsumpcja << " " << eksport << " " << import << " " << pobor << " " << produkcja << endl;
+    cout << "\t\t\t\t" << autokonsumpcja << " " << eksport << " " 
+         << import << " " << pobor << " " << produkcja << endl;
 }
 
-
-
+/**
+ * @brief Zwraca dane w postaci ciągu znaków.
+ * @return Dane w formie tekstowej.
+ */
 string LineData::printString() {
-    return date + " " + to_string(autokonsumpcja) + " " + to_string(eksport) + " " + to_string(import) + " " +
-        to_string(pobor) + " " + to_string(produkcja);
+    return date + " " + to_string(autokonsumpcja) + " " + to_string(eksport) + " " 
+           + to_string(import) + " " + to_string(pobor) + " " + to_string(produkcja);
 }
 
+/**
+ * @brief Serializuje dane do strumienia wyjściowego.
+ * @param out Strumień wyjściowy, do którego dane będą zapisane.
+ */
 void LineData::serialize(ofstream& out) const {
     size_t dateSize = date.size();
     out.write(reinterpret_cast<const char*>(&dateSize), sizeof(dateSize));
@@ -59,6 +87,10 @@ void LineData::serialize(ofstream& out) const {
     out.write(reinterpret_cast<const char*>(&produkcja), sizeof(produkcja));
 }
 
+/**
+ * @brief Deserializuje dane ze strumienia wejściowego.
+ * @param in Strumień wejściowy, z którego dane będą odczytane.
+ */
 void LineData::deserialize(ifstream& in) {
     size_t dateSize;
     in.read(reinterpret_cast<char*>(&dateSize), sizeof(dateSize));
